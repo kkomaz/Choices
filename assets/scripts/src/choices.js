@@ -507,7 +507,22 @@ class Choices {
 
           // If we have grouped options
           if (activeGroups.length >= 1 && this.isSearching !== true) {
-            choiceListFragment = this.renderGroups(activeGroups, activeChoices, choiceListFragment);
+            activeChoices.reduce((groupIds, activeChoice) => {
+              const groupId = activeChoice.groupId;
+              // If the choice is not part of a group
+              if (groupId < 0) {
+                choiceListFragment = this.renderChoices([activeChoice], choiceListFragment);
+              } else {
+                // If the choice group hasn't already been rendered
+                if (groupIds.indexOf(groupId) < 0) {
+                  // Get the group corresponding to the choice
+                  const activeGroup = activeGroups.filter((group) => group.id === groupId);
+                  choiceListFragment = this.renderGroups(activeGroup, activeChoices, choiceListFragment);
+                  groupIds.push(groupId);
+                }
+              }
+              return groupIds;
+            }, []);
           } else if (activeChoices.length >= 1) {
             choiceListFragment = this.renderChoices(activeChoices, choiceListFragment);
           }
