@@ -436,7 +436,9 @@
 
       var singlePresetOpts = new Choices('#choices-single-preset-options', {
         placeholder: true,
-      }).setChoices([{
+      }).setChoices([
+      { label: 'I\'m not in a group', value: 'no-group' },
+      {
         label: 'Group one',
         id: 1,
         disabled: false,
@@ -446,6 +448,7 @@
           { value: 'Child Three', label: 'Child Three' },
         ]
       },
+      { label: 'I\'m not in a group neither', value: 'no-group-2' },
       {
         label: 'Group two',
         id: 2,
