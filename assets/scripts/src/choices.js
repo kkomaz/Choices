@@ -510,7 +510,7 @@ class Choices {
             activeChoices.reduce((groupIds, activeChoice) => {
               const groupId = activeChoice.groupId;
               // If the choice is not part of a group
-              if (groupId < 0) {
+              if (groupId < 0 || groupId === undefined) {
                 choiceListFragment = this.renderChoices([activeChoice], choiceListFragment);
               } else {
                 // If the choice group hasn't already been rendered
