@@ -1384,7 +1384,7 @@ class Choices {
     if (isLoading) {
       this.containerOuter.classList.add(this.config.classNames.loadingState);
       this.containerOuter.setAttribute('aria-busy', 'true');
-      if (this.isSelectOneElement) {
+      if (this.isSelectOneElement && this.config.templates) {
         if (!placeholderItem) {
           placeholderItem = this._getTemplate('placeholder', this.config.loadingText);
           this.itemList.appendChild(placeholderItem);
