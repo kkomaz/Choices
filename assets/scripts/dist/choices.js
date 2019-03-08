@@ -1,4 +1,4 @@
-/*! choices.js v3.0.2 | (c) 2018 Josh Johnson | https://github.com/jshjohnson/Choices#readme */ 
+/*! choices.js v3.0.2 | (c) 2019 Josh Johnson | https://github.com/jshjohnson/Choices#readme */ 
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory();
@@ -78,11 +78,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _index2 = _interopRequireDefault(_index);
 
-	var _index3 = __webpack_require__(29);
+	var _index3 = __webpack_require__(30);
 
-	var _utils = __webpack_require__(30);
+	var _utils = __webpack_require__(31);
 
-	__webpack_require__(31);
+	__webpack_require__(32);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -224,12 +224,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return;
 	    }
 
+	    var ie11Agent = navigator.userAgent.match(/rv[ :]11/);
+	    var ie10Agent = navigator.userAgent.match(/MSIE\s10/);
+
 	    this.isTextElement = this.passedElement.type === 'text';
 	    this.isSelectOneElement = this.passedElement.type === 'select-one';
 	    this.isSelectMultipleElement = this.passedElement.type === 'select-multiple';
 	    this.isSelectElement = this.isSelectOneElement || this.isSelectMultipleElement;
 	    this.isValidElementType = this.isTextElement || this.isSelectElement;
-	    this.isIe11 = !!(navigator.userAgent.match(/Trident/) && navigator.userAgent.match(/rv[ :]11/));
+	    this.isOldIE = !!(navigator.userAgent.match(/Trident/) && (ie11Agent || ie10Agent));
 	    this.isScrollingOnIe = false;
 
 	    if (this.config.shouldSortItems === true && this.isSelectOneElement) {
@@ -2030,8 +2033,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function _onMouseDown(e) {
 	      var target = e.target;
 
-	      // If we have our mouse down on the scrollbar and are on IE11...
-	      if (target === this.choiceList && this.isIe11) {
+	      // If we have our mouse down on the scrollbar and are on IE11 or IE10...
+	      if (target === this.choiceList && this.isOldIE) {
 	        this.isScrollingOnIe = true;
 	      }
 
@@ -2255,9 +2258,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        blurActions[this.passedElement.type]();
 	      } else {
-	        // On IE11, clicking the scollbar blurs our input and thus
+	        // On IE11 and IE10, clicking the scrollbar blurs our input and thus
 	        // closes the dropdown. To stop this, we refocus our input
 	        // if we know we are on IE *and* are scrolling.
+	        // See _onMouseDown for logic on setting true.
 	        this.isScrollingOnIe = false;
 	        this.input.focus();
 	      }
@@ -3691,7 +3695,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
-	  Copyright (c) 2017 Jed Watson.
+	  Copyright (c) 2016 Jed Watson.
 	  Licensed under the MIT License (MIT), see
 	  http://jedwatson.github.io/classnames
 	*/
@@ -3713,11 +3717,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 				if (argType === 'string' || argType === 'number') {
 					classes.push(arg);
-				} else if (Array.isArray(arg) && arg.length) {
-					var inner = classNames.apply(null, arg);
-					if (inner) {
-						classes.push(inner);
-					}
+				} else if (Array.isArray(arg)) {
+					classes.push(classNames.apply(null, arg));
 				} else if (argType === 'object') {
 					for (var key in arg) {
 						if (hasOwn.call(arg, key) && arg[key]) {
@@ -3731,7 +3732,6 @@ return /******/ (function(modules) { // webpackBootstrap
 		}
 
 		if (typeof module !== 'undefined' && module.exports) {
-			classNames.default = classNames;
 			module.exports = classNames;
 		} else if (true) {
 			// register as 'classnames', consistent with npm package name
@@ -3758,7 +3758,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _redux = __webpack_require__(5);
 
-	var _index = __webpack_require__(25);
+	var _index = __webpack_require__(26);
 
 	var _index2 = _interopRequireDefault(_index);
 
@@ -4022,23 +4022,23 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createStore2 = _interopRequireDefault(_createStore);
 
-	var _combineReducers = __webpack_require__(20);
+	var _combineReducers = __webpack_require__(21);
 
 	var _combineReducers2 = _interopRequireDefault(_combineReducers);
 
-	var _bindActionCreators = __webpack_require__(22);
+	var _bindActionCreators = __webpack_require__(23);
 
 	var _bindActionCreators2 = _interopRequireDefault(_bindActionCreators);
 
-	var _applyMiddleware = __webpack_require__(23);
+	var _applyMiddleware = __webpack_require__(24);
 
 	var _applyMiddleware2 = _interopRequireDefault(_applyMiddleware);
 
-	var _compose = __webpack_require__(24);
+	var _compose = __webpack_require__(25);
 
 	var _compose2 = _interopRequireDefault(_compose);
 
-	var _warning = __webpack_require__(21);
+	var _warning = __webpack_require__(22);
 
 	var _warning2 = _interopRequireDefault(_warning);
 
@@ -4618,13 +4618,20 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
+	module.exports = __webpack_require__(18);
+
+
+/***/ }),
+/* 18 */
+/***/ (function(module, exports, __webpack_require__) {
+
 	/* WEBPACK VAR INJECTION */(function(global, module) {'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
 
-	var _ponyfill = __webpack_require__(19);
+	var _ponyfill = __webpack_require__(20);
 
 	var _ponyfill2 = _interopRequireDefault(_ponyfill);
 
@@ -4647,10 +4654,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var result = (0, _ponyfill2['default'])(root);
 	exports['default'] = result;
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(18)(module)))
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(19)(module)))
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports) {
 
 	module.exports = function(module) {
@@ -4666,7 +4673,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -4694,7 +4701,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4708,7 +4715,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
 
-	var _warning = __webpack_require__(21);
+	var _warning = __webpack_require__(22);
 
 	var _warning2 = _interopRequireDefault(_warning);
 
@@ -4842,7 +4849,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -4872,7 +4879,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -4928,7 +4935,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4939,7 +4946,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	exports['default'] = applyMiddleware;
 
-	var _compose = __webpack_require__(24);
+	var _compose = __webpack_require__(25);
 
 	var _compose2 = _interopRequireDefault(_compose);
 
@@ -4991,7 +4998,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -5032,7 +5039,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5043,15 +5050,15 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _redux = __webpack_require__(5);
 
-	var _items = __webpack_require__(26);
+	var _items = __webpack_require__(27);
 
 	var _items2 = _interopRequireDefault(_items);
 
-	var _groups = __webpack_require__(27);
+	var _groups = __webpack_require__(28);
 
 	var _groups2 = _interopRequireDefault(_groups);
 
-	var _choices = __webpack_require__(28);
+	var _choices = __webpack_require__(29);
 
 	var _choices2 = _interopRequireDefault(_choices);
 
@@ -5079,7 +5086,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = rootReducer;
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -5150,7 +5157,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = items;
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -5191,7 +5198,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = groups;
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -5315,7 +5322,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = choices;
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -5407,7 +5414,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		};
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -5999,7 +6006,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports) {
 
 	'use strict';
