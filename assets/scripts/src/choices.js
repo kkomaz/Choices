@@ -161,12 +161,15 @@ class Choices {
       return;
     }
 
+    const ie11Agent = navigator.userAgent.match(/rv[ :]11/);
+    const ie10Agent = navigator.userAgent.match(/MSIE\s10/);
+
     this.isTextElement = this.passedElement.type === 'text';
     this.isSelectOneElement = this.passedElement.type === 'select-one';
     this.isSelectMultipleElement = this.passedElement.type === 'select-multiple';
     this.isSelectElement = this.isSelectOneElement || this.isSelectMultipleElement;
     this.isValidElementType = this.isTextElement || this.isSelectElement;
-    this.isIe11 = !!(navigator.userAgent.match(/Trident/) && navigator.userAgent.match(/rv[ :]11/));
+    this.isOldIE = !!(navigator.userAgent.match(/Trident/) && (ie11Agent || ie10Agent));
     this.isScrollingOnIe = false;
 
 
@@ -1885,8 +1888,8 @@ class Choices {
   _onMouseDown(e) {
     const target = e.target;
 
-    // If we have our mouse down on the scrollbar and are on IE11...
-    if (target === this.choiceList && this.isIe11) {
+    // If we have our mouse down on the scrollbar and are on IE11 or IE10...
+    if (target === this.choiceList && this.isOldIE) {
       this.isScrollingOnIe = true;
     }
 
@@ -2087,9 +2090,10 @@ class Choices {
 
       blurActions[this.passedElement.type]();
     } else {
-      // On IE11, clicking the scollbar blurs our input and thus
+      // On IE11 and IE10, clicking the scrollbar blurs our input and thus
       // closes the dropdown. To stop this, we refocus our input
       // if we know we are on IE *and* are scrolling.
+      // See _onMouseDown for logic on setting true.
       this.isScrollingOnIe = false;
       this.input.focus();
     }
