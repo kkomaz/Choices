@@ -1500,6 +1500,8 @@ class Choices {
    */
   _handleSearch(value) {
     if (!value) {
+      // When search value is cleared, trigger search event.
+      triggerEvent(this.passedElement, 'search', { value, resultCount: 0 })
       return;
     }
 
@@ -1816,8 +1818,11 @@ class Choices {
             activateChoices(true)
           );
         }
+        if (!value && this.canSearch) {
+          this._handleSearch(value);
+        }
       } else if (this.canSearch && canAddItem.response) {
-        this._handleSearch(this.input.value);
+        this._handleSearch(value);
       }
     }
     // Re-establish canSearch value from changes in _onKeyDown
