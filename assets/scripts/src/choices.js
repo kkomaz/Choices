@@ -2377,18 +2377,16 @@ class Choices {
   */
 
   _addAllChoices(choices) {
-    const fixedChoices = choices.reduce((acc, curr) => {
-      const stateChoices = this.store.getChoices();
+    const fixedChoices = choices.reduce((acc, curr, idx) => {
       const choiceLabel = curr.label || curr.value;
-      const choiceId = stateChoices ? stateChoices.length + 1 : 1;
       const choiceElementId = `${this.baseId}-${this.idNames.itemChoice}-${choiceId}`;
-
+      
       const choice = {
         value: curr['value'],
         label: choiceLabel,
-        id: choiceId,
+        id: idx + 1,
         groupId: curr.groupId || -1,
-        selected: false,
+        selected: curr.selected || false,
         active: true,
         score: 9999,
         disabled: curr.disabled || false,
