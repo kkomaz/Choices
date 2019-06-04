@@ -2378,13 +2378,14 @@ class Choices {
 
   _addAllChoices(choices) {
     const fixedChoices = choices.reduce((acc, curr, idx) => {
+      const choiceId = idx + 1;
       const choiceLabel = curr.label || curr.value;
       const choiceElementId = `${this.baseId}-${this.idNames.itemChoice}-${choiceId}`;
       
       const choice = {
         value: curr['value'],
         label: choiceLabel,
-        id: idx + 1,
+        id: choiceId,
         groupId: curr.groupId || -1,
         selected: curr.selected || false,
         active: true,
