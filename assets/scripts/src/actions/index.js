@@ -78,3 +78,17 @@ export const clearAll = () => {
     type: 'CLEAR_ALL',
   };
 };
+
+export const addAllChoices = (allChoices) => {
+  return {
+    type: 'ADD_ALL_CHOICES',
+    allChoices,
+  };
+};
+
+export const addAllGroups = (allGroups) => {
+  return {
+    type: 'ADD_ALL_GROUPS',
+    allGroups
+  }
+}

@@ -2,13 +2,14 @@ import Fuse from 'fuse.js';
 import classNames from 'classnames';
 import Store from './store/index.js';
 import {
+  addAllChoices,
+  addAllGroups,
   addItem,
   removeItem,
   highlightItem,
   addChoice,
   filterChoices,
   activateChoices,
-  addGroup,
   clearAll,
   clearChoices,
 }
@@ -1004,31 +1005,24 @@ class Choices {
         if (replaceChoices) {
           this._clearChoices();
         }
+
+        const allGroups = [];
+        const allChoices = [];
+
         // Add choices if passed
         if (choices && choices.length) {
           this.containerOuter.classList.remove(this.config.classNames.loadingState);
           choices.forEach((result) => {
             if (result.choices) {
-              this._addGroup(
-                result,
-                (result.id || null),
-                value,
-                label
-              );
+              allGroups.push(result);
             } else {
-              this._addChoice(
-                result[value],
-                result[label],
-                result.selected,
-                result.disabled,
-                undefined,
-                result.customProperties,
-                result.placeholder
-              );
+              allChoices.push(result);
             }
           });
-        }
-      }
+        } 
+        allGroups.length && this._addAllGroups(allGroups, value, label);
+        allChoices.length && this._addAllChoices(allChoices);
+      };
     }
     return this;
   }
@@ -2334,6 +2328,101 @@ class Choices {
   }
 
   /**
+   * Clear all choices added to the store.
+   * @return
+   * @private
+   */
+  _clearChoices() {
+    this.store.dispatch(
+      clearChoices()
+    );
+  }
+
+  /*
+   * Add all groups to dropdown
+  */
+
+  _addAllGroups(allGroups) {
+    const fixedGroups = [];
+    const choices = [];
+
+    allGroups.forEach((group) => {
+      const groupId = group.id ? group.id : Math.floor(new Date().valueOf() * Math.random());
+      const isDisabled = group.disabled ? group.disabled : false;
+
+      fixedGroups.push({
+        value: group.label, 
+        id: groupId,
+        active: true,
+        disabled: isDisabled
+      });
+
+      group.choices.forEach((choice) => {
+        choice['groupId'] = groupId;
+        choices.push(choice);
+      });
+    });
+
+    this._addAllChoices(choices);
+
+    this.store.dispatch(
+      addAllGroups(
+        fixedGroups
+      )
+    )
+  }
+
+  /*
+    Add all choices to dropdown
+  */
+
+  _addAllChoices(choices) {
+    const fixedChoices = choices.reduce((acc, curr) => {
+      const stateChoices = this.store.getChoices();
+      const choiceLabel = curr.label || curr.value;
+      const choiceId = stateChoices ? stateChoices.length + 1 : 1;
+      const choiceElementId = `${this.baseId}-${this.idNames.itemChoice}-${choiceId}`;
+
+      const choice = {
+        value: curr['value'],
+        label: choiceLabel,
+        id: choiceId,
+        groupId: curr.groupId || -1,
+        selected: false,
+        active: true,
+        score: 9999,
+        disabled: curr.disabled || false,
+        elementId: choiceElementId,
+        customProperties: curr.customProperties,
+        placeholder: curr.placeholder || false,
+        keyCode: null,
+      }
+
+      if(curr.selected) {
+        this._addItem(
+          value,
+          choiceLabel,
+          choiceId,
+          undefined,
+          curr.customProperties || null,
+          curr.placeholder || false,
+          keyCode
+        );
+      }
+
+      return [...acc, choice];
+    }, []);
+
+    console.log('FC', fixedChoices)
+    
+    this.store.dispatch(
+      addAllChoices(
+        fixedChoices,
+      )
+    )
+  }
+
+    /**
    * Add choice to dropdown
    * @param {String} value Value of choice
    * @param {String} [label] Label of choice
@@ -2382,18 +2471,7 @@ class Choices {
     }
   }
 
-  /**
-   * Clear all choices added to the store.
-   * @return
-   * @private
-   */
-  _clearChoices() {
-    this.store.dispatch(
-      clearChoices()
-    );
-  }
-
-  /**
+    /**
    * Add group to dropdown
    * @param {Object} group Group to add
    * @param {Number} id Group ID
@@ -2402,6 +2480,7 @@ class Choices {
    * @return
    * @private
    */
+
   _addGroup(group, id, valueKey = 'value', labelKey = 'label') {
     const groupChoices = isType('Object', group) ? group.choices : Array.from(group.getElementsByTagName('OPTION'));
     const groupId = id ? id : Math.floor(new Date().valueOf() * Math.random());
