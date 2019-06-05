@@ -1013,16 +1013,33 @@ class Choices {
         // Add choices if passed
         if (choices && choices.length) {
           this.containerOuter.classList.remove(this.config.classNames.loadingState);
+
           choices.forEach((result) => {
+            const groupId = result.id ? result.id : Math.floor(new Date().valueOf() * Math.random());
+            const isDisabled = result.disabled ? result.disabled : false;
+       
             if (result.choices) {
-              allGroups.push(result);
+              allGroups.push({
+                value: result.label, 
+                id: groupId,
+                active: true,
+                disabled: isDisabled
+              });
+              result.choices.forEach((choice) => {
+                choice['groupId'] = groupId;
+                allChoices.push(choice);
+              });
             } else {
-              allChoices.push(result);
+              allChoices.push(result)
             }
           });
-        } 
-        allGroups.length && this._addAllGroups(allGroups, value, label);
-        allChoices.length && this._addAllChoices(allChoices);
+          allGroups.length && this.store.dispatch(
+            addAllGroups(
+              allGroups
+            )
+          )
+          allChoices.length && this._addAllChoices(allChoices);
+        };
       };
     }
     return this;
@@ -2337,40 +2354,6 @@ class Choices {
     this.store.dispatch(
       clearChoices()
     );
-  }
-
-  /*
-   * Add all groups to dropdown
-  */
-
-  _addAllGroups(allGroups) {
-    const fixedGroups = [];
-    const choices = [];
-
-    allGroups.forEach((group) => {
-      const groupId = group.id ? group.id : Math.floor(new Date().valueOf() * Math.random());
-      const isDisabled = group.disabled ? group.disabled : false;
-
-      fixedGroups.push({
-        value: group.label, 
-        id: groupId,
-        active: true,
-        disabled: isDisabled
-      });
-
-      group.choices.forEach((choice) => {
-        choice['groupId'] = groupId;
-        choices.push(choice);
-      });
-    });
-
-    this._addAllChoices(choices);
-
-    this.store.dispatch(
-      addAllGroups(
-        fixedGroups
-      )
-    )
   }
 
   /*

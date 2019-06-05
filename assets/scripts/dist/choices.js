@@ -1133,16 +1133,29 @@ return /******/ (function(modules) { // webpackBootstrap
 	          // Add choices if passed
 	          if (choices && choices.length) {
 	            this.containerOuter.classList.remove(this.config.classNames.loadingState);
+
 	            choices.forEach(function (result) {
+	              var groupId = result.id ? result.id : Math.floor(new Date().valueOf() * Math.random());
+	              var isDisabled = result.disabled ? result.disabled : false;
+
 	              if (result.choices) {
-	                allGroups.push(result);
+	                allGroups.push({
+	                  value: result.label,
+	                  id: groupId,
+	                  active: true,
+	                  disabled: isDisabled
+	                });
+	                result.choices.forEach(function (choice) {
+	                  choice['groupId'] = groupId;
+	                  allChoices.push(choice);
+	                });
 	              } else {
 	                allChoices.push(result);
 	              }
 	            });
-	          }
-	          allGroups.length && this._addAllGroups(allGroups, value, label);
-	          allChoices.length && this._addAllChoices(allChoices);
+	            allGroups.length && this.store.dispatch((0, _index3.addAllGroups)(allGroups));
+	            allChoices.length && this._addAllChoices(allChoices);
+	          };
 	        };
 	      }
 	      return this;
@@ -2530,38 +2543,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: '_clearChoices',
 	    value: function _clearChoices() {
 	      this.store.dispatch((0, _index3.clearChoices)());
-	    }
-
-	    /*
-	     * Add all groups to dropdown
-	    */
-
-	  }, {
-	    key: '_addAllGroups',
-	    value: function _addAllGroups(allGroups) {
-	      var fixedGroups = [];
-	      var choices = [];
-
-	      allGroups.forEach(function (group) {
-	        var groupId = group.id ? group.id : Math.floor(new Date().valueOf() * Math.random());
-	        var isDisabled = group.disabled ? group.disabled : false;
-
-	        fixedGroups.push({
-	          value: group.label,
-	          id: groupId,
-	          active: true,
-	          disabled: isDisabled
-	        });
-
-	        group.choices.forEach(function (choice) {
-	          choice['groupId'] = groupId;
-	          choices.push(choice);
-	        });
-	      });
-
-	      this._addAllChoices(choices);
-
-	      this.store.dispatch((0, _index3.addAllGroups)(fixedGroups));
 	    }
 
 	    /*
