@@ -23,6 +23,13 @@ const items = (state = [], action) => {
       });
     }
 
+    case 'ADD_ALL_ITEMS': {
+      return [
+        ...state,
+        action.allItems,
+      ]
+    }
+
     case 'REMOVE_ITEM': {
       // Set item to inactive
       return state.map((item) => {

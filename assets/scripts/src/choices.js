@@ -4,6 +4,7 @@ import Store from './store/index.js';
 import {
   addAllChoices,
   addAllGroups,
+  addAllItems,
   addItem,
   removeItem,
   highlightItem,
@@ -2377,6 +2378,9 @@ class Choices {
   */
 
   _addAllChoices(choices) {
+    const allItems = [];
+    let itemsIdCount = 1;
+
     const fixedChoices = choices.reduce((acc, curr, idx) => {
       const choiceId = idx + 1;
       const choiceLabel = curr.label || curr.value;
@@ -2398,27 +2402,63 @@ class Choices {
       }
 
       if(curr.selected) {
-        this._addItem(
-          value,
-          choiceLabel,
+        allItems.push({
+          value: curr.value,
+          label: choiceLabel,
+          id: itemsIdCount,
           choiceId,
-          undefined,
-          curr.customProperties || null,
-          curr.placeholder || false,
-          keyCode
-        );
+          groupId: -1,
+          customProperties: curr.customProperties || null,
+          placeHolder: curr.placeholder || false,
+          keyCode: null,
+        })
+        itemsIdCount++ 
       }
 
       return [...acc, choice];
     }, []);
-
-    console.log('FC', fixedChoices)
     
     this.store.dispatch(
       addAllChoices(
         fixedChoices,
       )
     )
+    this._addAllItems(allItems);
+  }
+
+  _addAllItems(allItems) {
+    this.store.dispatch(
+      addAllItems(
+        allItems
+      )
+    );
+
+    allItems.forEach((item) => {
+      const group = item.groupId >= 0 ? this.store.getGroupById(groupId) : null;
+
+      if (this.isSelectOneElement) {
+        this.removeActiveItems(item.id);
+      }
+      // Trigger change event
+      if (group && group.value) {
+        triggerEvent(this.passedElement, 'addItem', {
+          id: item.id,
+          value: item.value,
+          label: item.label,
+          groupValue: group.value,
+          keyCode: item.keyCode,
+        });
+      } else {
+        triggerEvent(this.passedElement, 'addItem', {
+          id: item.id,
+          value: item.value,
+          label: item.label,
+          keyCode: item.keyCode
+        });
+      }
+    });
+
+    return this;
   }
 
     /**

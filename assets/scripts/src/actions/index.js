@@ -92,3 +92,10 @@ export const addAllGroups = (allGroups) => {
     allGroups
   }
 }
+
+export const addAllItems = (allItems) => {
+  return {
+    type: 'ADD_ALL_ITEMS',
+    allItems
+  }
+}
