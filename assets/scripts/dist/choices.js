@@ -1154,7 +1154,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	              }
 	            });
 	            allGroups.length && this.store.dispatch((0, _index3.addAllGroups)(allGroups));
-	            allChoices.length && this._addAllChoices(allChoices);
+	            allChoices.length && this._addAllChoices(allChoices, value, label);
 	          };
 	        };
 	      }
@@ -2554,39 +2554,44 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function _addAllChoices(choices) {
 	      var _this21 = this;
 
+	      var valueKey = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'value';
+	      var labelKey = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'label';
+
 	      var allItems = [];
 	      var itemsIdCount = 1;
 
-	      var fixedChoices = choices.reduce(function (acc, curr, idx) {
+	      console.log('Choices', choices);
+
+	      var updatedChoices = choices.reduce(function (acc, curr, idx) {
 	        var choiceId = idx + 1;
 	        var choiceLabel = curr.label || curr.value;
 	        var choiceElementId = _this21.baseId + '-' + _this21.idNames.itemChoice + '-' + choiceId;
 
 	        var choice = {
-	          value: curr['value'],
-	          label: choiceLabel,
-	          id: choiceId,
-	          groupId: curr.groupId || -1,
-	          selected: curr.selected || false,
 	          active: true,
-	          score: 9999,
+	          customProperties: curr.customProperties,
 	          disabled: curr.disabled || false,
 	          elementId: choiceElementId,
-	          customProperties: curr.customProperties,
+	          groupId: curr.groupId || -1,
+	          id: choiceId,
+	          keyCode: null,
+	          label: (0, _utils.isType)('Object', curr) ? choiceLabel : curr.innerHTML || null,
 	          placeholder: curr.placeholder || false,
-	          keyCode: null
+	          score: 9999,
+	          selected: false,
+	          value: curr[valueKey]
 	        };
 
 	        if (curr.selected) {
 	          allItems.push({
-	            value: curr.value,
-	            label: choiceLabel,
-	            id: itemsIdCount,
 	            choiceId: choiceId,
-	            groupId: -1,
 	            customProperties: curr.customProperties || null,
+	            groupId: -1,
+	            id: itemsIdCount,
+	            keyCode: null,
+	            label: choiceLabel,
 	            placeHolder: curr.placeholder || false,
-	            keyCode: null
+	            value: curr.value
 	          });
 	          itemsIdCount++;
 	        }
@@ -2594,7 +2599,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return [].concat(_toConsumableArray(acc), [choice]);
 	      }, []);
 
-	      this.store.dispatch((0, _index3.addAllChoices)(fixedChoices));
+	      this.store.dispatch((0, _index3.addAllChoices)(updatedChoices));
 	      this._addAllItems(allItems);
 	    }
 	  }, {
@@ -2606,6 +2611,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      allItems.forEach(function (item) {
 	        var group = item.groupId >= 0 ? _this22.store.getGroupById(groupId) : null;
+	        var passedValue = (0, _utils.isType)('String', item.value) ? item.value.trim() : item.value;
+	        var passedLabel = label || passedValue;
 
 	        if (_this22.isSelectOneElement) {
 	          _this22.removeActiveItems(item.id);
@@ -2614,17 +2621,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (group && group.value) {
 	          (0, _utils.triggerEvent)(_this22.passedElement, 'addItem', {
 	            id: item.id,
-	            value: item.value,
-	            label: item.label,
+	            value: passedValue,
+	            label: passedLabel,
 	            groupValue: group.value,
-	            keyCode: item.keyCode
+	            keyCode: item.keyCode || null
 	          });
 	        } else {
 	          (0, _utils.triggerEvent)(_this22.passedElement, 'addItem', {
 	            id: item.id,
-	            value: item.value,
-	            label: item.label,
-	            keyCode: item.keyCode
+	            value: passedValue,
+	            label: passedLabel,
+	            keyCode: item.keyCode || null
 	          });
 	        }
 	      });

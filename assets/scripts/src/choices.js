@@ -1038,7 +1038,7 @@ class Choices {
               allGroups
             )
           )
-          allChoices.length && this._addAllChoices(allChoices);
+          allChoices.length && this._addAllChoices(allChoices, value, label);
         };
       };
     }
@@ -2360,40 +2360,42 @@ class Choices {
     Add all choices to dropdown
   */
 
-  _addAllChoices(choices) {
+  _addAllChoices(choices, valueKey = 'value', labelKey = 'label') {
     const allItems = [];
     let itemsIdCount = 1;
 
-    const fixedChoices = choices.reduce((acc, curr, idx) => {
+    console.log('Choices', choices);
+
+    const updatedChoices = choices.reduce((acc, curr, idx) => {
       const choiceId = idx + 1;
       const choiceLabel = curr.label || curr.value;
       const choiceElementId = `${this.baseId}-${this.idNames.itemChoice}-${choiceId}`;
       
       const choice = {
-        value: curr['value'],
-        label: choiceLabel,
-        id: choiceId,
-        groupId: curr.groupId || -1,
-        selected: curr.selected || false,
         active: true,
-        score: 9999,
+        customProperties: curr.customProperties,
         disabled: curr.disabled || false,
         elementId: choiceElementId,
-        customProperties: curr.customProperties,
-        placeholder: curr.placeholder || false,
+        groupId: curr.groupId || -1,
+        id: choiceId,
         keyCode: null,
+        label: (isType('Object', curr)) ? choiceLabel : curr.innerHTML || null,
+        placeholder: curr.placeholder || false,
+        score: 9999,
+        selected: false,
+        value: curr[valueKey],
       }
 
       if(curr.selected) {
         allItems.push({
-          value: curr.value,
-          label: choiceLabel,
-          id: itemsIdCount,
           choiceId,
-          groupId: -1,
           customProperties: curr.customProperties || null,
-          placeHolder: curr.placeholder || false,
+          groupId: -1,
+          id: itemsIdCount,
           keyCode: null,
+          label: choiceLabel,
+          placeHolder: curr.placeholder || false,
+          value: curr.value,
         })
         itemsIdCount++ 
       }
@@ -2403,7 +2405,7 @@ class Choices {
     
     this.store.dispatch(
       addAllChoices(
-        fixedChoices,
+        updatedChoices,
       )
     )
     this._addAllItems(allItems);
@@ -2418,6 +2420,9 @@ class Choices {
 
     allItems.forEach((item) => {
       const group = item.groupId >= 0 ? this.store.getGroupById(groupId) : null;
+      const passedValue = isType('String', item.value) ? item.value.trim() : item.value;
+      const passedLabel = label || passedValue
+      
 
       if (this.isSelectOneElement) {
         this.removeActiveItems(item.id);
@@ -2426,17 +2431,17 @@ class Choices {
       if (group && group.value) {
         triggerEvent(this.passedElement, 'addItem', {
           id: item.id,
-          value: item.value,
-          label: item.label,
+          value: passedValue,
+          label: passedLabel,
           groupValue: group.value,
-          keyCode: item.keyCode,
+          keyCode: item.keyCode || null,
         });
       } else {
         triggerEvent(this.passedElement, 'addItem', {
           id: item.id,
-          value: item.value,
-          label: item.label,
-          keyCode: item.keyCode
+          value: passedValue,
+          label: passedLabel,
+          keyCode: item.keyCode || null,
         });
       }
     });
