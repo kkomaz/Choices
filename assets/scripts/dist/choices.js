@@ -2560,8 +2560,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var allItems = [];
 	      var itemsIdCount = 1;
 
-	      console.log('Choices', choices);
-
 	      var updatedChoices = choices.reduce(function (acc, curr, idx) {
 	        var choiceId = idx + 1;
 	        var choiceLabel = curr.label || curr.value;
@@ -2600,7 +2598,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }, []);
 
 	      this.store.dispatch((0, _index3.addAllChoices)(updatedChoices));
-	      this._addAllItems(allItems);
+	      allItems.length && this._addAllItems(allItems);
 	    }
 	  }, {
 	    key: '_addAllItems',

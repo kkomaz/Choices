@@ -2363,9 +2363,7 @@ class Choices {
   _addAllChoices(choices, valueKey = 'value', labelKey = 'label') {
     const allItems = [];
     let itemsIdCount = 1;
-
-    console.log('Choices', choices);
-
+    
     const updatedChoices = choices.reduce((acc, curr, idx) => {
       const choiceId = idx + 1;
       const choiceLabel = curr.label || curr.value;
@@ -2408,7 +2406,7 @@ class Choices {
         updatedChoices,
       )
     )
-    this._addAllItems(allItems);
+    allItems.length && this._addAllItems(allItems);
   }
 
   _addAllItems(allItems) {
