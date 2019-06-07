@@ -2545,98 +2545,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.store.dispatch((0, _index3.clearChoices)());
 	    }
 
-	    /*
-	      Add all choices to dropdown
-	    */
-
-	  }, {
-	    key: '_addAllChoices',
-	    value: function _addAllChoices(choices) {
-	      var _this21 = this;
-
-	      var valueKey = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'value';
-	      var labelKey = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'label';
-
-	      var allItems = [];
-	      var itemsIdCount = 1;
-
-	      var updatedChoices = choices.reduce(function (acc, curr, idx) {
-	        var choiceId = idx + 1;
-	        var choiceLabel = curr.label || curr.value;
-	        var choiceElementId = _this21.baseId + '-' + _this21.idNames.itemChoice + '-' + choiceId;
-
-	        var choice = {
-	          active: true,
-	          customProperties: curr.customProperties,
-	          disabled: curr.disabled || false,
-	          elementId: choiceElementId,
-	          groupId: curr.groupId || -1,
-	          id: choiceId,
-	          keyCode: null,
-	          label: (0, _utils.isType)('Object', curr) ? choiceLabel : curr.innerHTML || null,
-	          placeholder: curr.placeholder || false,
-	          score: 9999,
-	          selected: false,
-	          value: curr[valueKey]
-	        };
-
-	        if (curr.selected) {
-	          allItems.push({
-	            choiceId: choiceId,
-	            customProperties: curr.customProperties || null,
-	            groupId: -1,
-	            id: itemsIdCount,
-	            keyCode: null,
-	            label: choiceLabel,
-	            placeHolder: curr.placeholder || false,
-	            value: curr.value
-	          });
-	          itemsIdCount++;
-	        }
-
-	        return [].concat(_toConsumableArray(acc), [choice]);
-	      }, []);
-
-	      this.store.dispatch((0, _index3.addAllChoices)(updatedChoices));
-	      allItems.length && this._addAllItems(allItems);
-	    }
-	  }, {
-	    key: '_addAllItems',
-	    value: function _addAllItems(allItems) {
-	      var _this22 = this;
-
-	      this.store.dispatch((0, _index3.addAllItems)(allItems));
-
-	      allItems.forEach(function (item) {
-	        var group = item.groupId >= 0 ? _this22.store.getGroupById(groupId) : null;
-	        var passedValue = (0, _utils.isType)('String', item.value) ? item.value.trim() : item.value;
-	        var passedLabel = label || passedValue;
-
-	        if (_this22.isSelectOneElement) {
-	          _this22.removeActiveItems(item.id);
-	        }
-	        // Trigger change event
-	        if (group && group.value) {
-	          (0, _utils.triggerEvent)(_this22.passedElement, 'addItem', {
-	            id: item.id,
-	            value: passedValue,
-	            label: passedLabel,
-	            groupValue: group.value,
-	            keyCode: item.keyCode || null
-	          });
-	        } else {
-	          (0, _utils.triggerEvent)(_this22.passedElement, 'addItem', {
-	            id: item.id,
-	            value: passedValue,
-	            label: passedLabel,
-	            keyCode: item.keyCode || null
-	          });
-	        }
-	      });
-
-	      return this;
-	    }
-
 	    /**
 	    * Add choice to dropdown
 	    * @param {String} value Value of choice
@@ -2690,7 +2598,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: '_addGroup',
 	    value: function _addGroup(group, id) {
-	      var _this23 = this;
+	      var _this21 = this;
 
 	      var valueKey = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'value';
 	      var labelKey = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 'label';
@@ -2704,11 +2612,107 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        groupChoices.forEach(function (option) {
 	          var isOptDisabled = option.disabled || option.parentNode && option.parentNode.disabled;
-	          _this23._addChoice(option[valueKey], (0, _utils.isType)('Object', option) ? option[labelKey] : option.innerHTML, option.selected, isOptDisabled, groupId, option.customProperties, option.placeholder);
+	          _this21._addChoice(option[valueKey], (0, _utils.isType)('Object', option) ? option[labelKey] : option.innerHTML, option.selected, isOptDisabled, groupId, option.customProperties, option.placeholder);
 	        });
 	      } else {
 	        this.store.dispatch(addGroup(group.label, group.id, false, group.disabled));
 	      }
+	    }
+
+	    /*
+	    Add all choices to dropdown
+	    */
+
+	  }, {
+	    key: '_addAllChoices',
+	    value: function _addAllChoices(choices) {
+	      var _this22 = this;
+
+	      var valueKey = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'value';
+	      var labelKey = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'label';
+
+	      var allItems = [];
+	      var itemsIdCount = 1;
+
+	      var updatedChoices = choices.reduce(function (acc, curr, idx) {
+	        var choiceId = idx + 1;
+	        var choiceLabel = curr[labelKey] || curr[valueKey];
+	        var choiceElementId = _this22.baseId + '-' + _this22.idNames.itemChoice + '-' + choiceId;
+
+	        var choice = {
+	          active: true,
+	          customProperties: curr.customProperties,
+	          disabled: curr.disabled || false,
+	          elementId: choiceElementId,
+	          groupId: curr.groupId || -1,
+	          id: choiceId,
+	          keyCode: null,
+	          label: (0, _utils.isType)('Object', curr) ? choiceLabel : curr.innerHTML || null,
+	          placeholder: curr.placeholder || false,
+	          score: 9999,
+	          selected: false,
+	          value: curr[valueKey]
+	        };
+
+	        if (curr.selected) {
+	          allItems.push({
+	            choiceId: choiceId,
+	            customProperties: curr.customProperties || null,
+	            groupId: -1,
+	            id: itemsIdCount,
+	            keyCode: null,
+	            label: choiceLabel,
+	            placeHolder: curr.placeholder || false,
+	            value: curr.value
+	          });
+	          itemsIdCount++;
+	        }
+
+	        return [].concat(_toConsumableArray(acc), [choice]);
+	      }, []);
+
+	      this.store.dispatch((0, _index3.addAllChoices)(updatedChoices));
+	      allItems.length && this._addAllItems({ allItems: allItems, labelKey: labelKey, valueKey: valueKey });
+	    }
+	  }, {
+	    key: '_addAllItems',
+	    value: function _addAllItems(_ref) {
+	      var _this23 = this;
+
+	      var allItems = _ref.allItems,
+	          labelKey = _ref.labelKey,
+	          valueKey = _ref.valueKey;
+
+	      this.store.dispatch((0, _index3.addAllItems)(allItems));
+
+	      allItems.forEach(function (item) {
+	        var group = item.groupId >= 0 ? _this23.store.getGroupById(groupId) : null;
+	        var passedValue = (0, _utils.isType)('String', item[valueKey]) ? item[valueKey].trim() : item[valueKey];
+	        var passedLabel = item[labelKey] || passedValue;
+
+	        if (_this23.isSelectOneElement) {
+	          _this23.removeActiveItems(item.id);
+	        }
+	        // Trigger change event
+	        if (group && group.value) {
+	          (0, _utils.triggerEvent)(_this23.passedElement, 'addItem', {
+	            id: item.id,
+	            value: passedValue,
+	            label: passedLabel,
+	            groupValue: group.value,
+	            keyCode: item.keyCode || null
+	          });
+	        } else {
+	          (0, _utils.triggerEvent)(_this23.passedElement, 'addItem', {
+	            id: item.id,
+	            value: passedValue,
+	            label: passedLabel,
+	            keyCode: item.keyCode || null
+	          });
+	        }
+	      });
+
+	      return this;
 	    }
 
 	    /**
