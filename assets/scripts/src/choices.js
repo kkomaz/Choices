@@ -2356,97 +2356,6 @@ class Choices {
     );
   }
 
-  /*
-    Add all choices to dropdown
-  */
-
-  _addAllChoices(choices, valueKey = 'value', labelKey = 'label') {
-    const allItems = [];
-    let itemsIdCount = 1;
-    
-    const updatedChoices = choices.reduce((acc, curr, idx) => {
-      const choiceId = idx + 1;
-      const choiceLabel = curr.label || curr.value;
-      const choiceElementId = `${this.baseId}-${this.idNames.itemChoice}-${choiceId}`;
-      
-      const choice = {
-        active: true,
-        customProperties: curr.customProperties,
-        disabled: curr.disabled || false,
-        elementId: choiceElementId,
-        groupId: curr.groupId || -1,
-        id: choiceId,
-        keyCode: null,
-        label: (isType('Object', curr)) ? choiceLabel : curr.innerHTML || null,
-        placeholder: curr.placeholder || false,
-        score: 9999,
-        selected: false,
-        value: curr[valueKey],
-      }
-
-      if(curr.selected) {
-        allItems.push({
-          choiceId,
-          customProperties: curr.customProperties || null,
-          groupId: -1,
-          id: itemsIdCount,
-          keyCode: null,
-          label: choiceLabel,
-          placeHolder: curr.placeholder || false,
-          value: curr.value,
-        })
-        itemsIdCount++ 
-      }
-
-      return [...acc, choice];
-    }, []);
-    
-    this.store.dispatch(
-      addAllChoices(
-        updatedChoices,
-      )
-    )
-    allItems.length && this._addAllItems(allItems);
-  }
-
-  _addAllItems(allItems) {
-    this.store.dispatch(
-      addAllItems(
-        allItems
-      )
-    );
-
-    allItems.forEach((item) => {
-      const group = item.groupId >= 0 ? this.store.getGroupById(groupId) : null;
-      const passedValue = isType('String', item.value) ? item.value.trim() : item.value;
-      const passedLabel = label || passedValue
-      
-
-      if (this.isSelectOneElement) {
-        this.removeActiveItems(item.id);
-      }
-      // Trigger change event
-      if (group && group.value) {
-        triggerEvent(this.passedElement, 'addItem', {
-          id: item.id,
-          value: passedValue,
-          label: passedLabel,
-          groupValue: group.value,
-          keyCode: item.keyCode || null,
-        });
-      } else {
-        triggerEvent(this.passedElement, 'addItem', {
-          id: item.id,
-          value: passedValue,
-          label: passedLabel,
-          keyCode: item.keyCode || null,
-        });
-      }
-    });
-
-    return this;
-  }
-
     /**
    * Add choice to dropdown
    * @param {String} value Value of choice
@@ -2543,6 +2452,96 @@ class Choices {
         )
       );
     }
+  }
+
+    /*
+    Add all choices to dropdown
+  */
+
+  _addAllChoices(choices, valueKey = 'value', labelKey = 'label') {
+    const allItems = [];
+    let itemsIdCount = 1;
+    
+    const updatedChoices = choices.reduce((acc, curr, idx) => {
+      const choiceId = idx + 1;
+      const choiceLabel = curr[labelKey]|| curr[valueKey];
+      const choiceElementId = `${this.baseId}-${this.idNames.itemChoice}-${choiceId}`;
+      
+      const choice = {
+        active: true,
+        customProperties: curr.customProperties,
+        disabled: curr.disabled || false,
+        elementId: choiceElementId,
+        groupId: curr.groupId || -1,
+        id: choiceId,
+        keyCode: null,
+        label: (isType('Object', curr)) ? choiceLabel : curr.innerHTML || null,
+        placeholder: curr.placeholder || false,
+        score: 9999,
+        selected: false,
+        value: curr[valueKey],
+      }
+
+      if(curr.selected) {
+        allItems.push({
+          choiceId,
+          customProperties: curr.customProperties || null,
+          groupId: -1,
+          id: itemsIdCount,
+          keyCode: null,
+          label: choiceLabel,
+          placeHolder: curr.placeholder || false,
+          value: curr.value,
+        })
+        itemsIdCount++ 
+      }
+
+      return [...acc, choice];
+    }, []);
+    
+    this.store.dispatch(
+      addAllChoices(
+        updatedChoices,
+      )
+    )
+    allItems.length && this._addAllItems({ allItems, labelKey, valueKey });
+  }
+
+  _addAllItems({ allItems, labelKey, valueKey }) {
+    this.store.dispatch(
+      addAllItems(
+        allItems
+      )
+    );
+
+    allItems.forEach((item) => {
+      const group = item.groupId >= 0 ? this.store.getGroupById(groupId) : null;
+      const passedValue = isType('String', item[valueKey]) ? item[valueKey].trim() : item[valueKey];
+      const passedLabel = item[labelKey] || passedValue;
+      
+      if (this.isSelectOneElement) {
+        this.removeActiveItems(item.id);
+      }
+      // Trigger change event
+      if (group && group.value) {
+        triggerEvent(this.passedElement, 'addItem', {
+          id: item.id,
+          value: passedValue,
+          label: passedLabel,
+          groupValue: group.value,
+          keyCode: item.keyCode || null,
+        });
+      } else {
+        triggerEvent(this.passedElement, 'addItem', {
+          id: item.id,
+          value: passedValue,
+          label: passedLabel,
+          keyCode: item.keyCode || null,
+        });
+      }
+    });
+
+    return this;
   }
 
   /**
