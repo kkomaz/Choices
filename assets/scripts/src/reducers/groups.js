@@ -9,6 +9,13 @@ const groups = (state = [], action) => {
       }];
     }
 
+    case 'ADD_ALL_GROUPS': {
+      return [
+        ...state,
+        ...action.allGroups,
+      ]
+    }
+
     case 'CLEAR_CHOICES': {
       return state.groups = [];
     }

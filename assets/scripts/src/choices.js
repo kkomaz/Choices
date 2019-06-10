@@ -2,13 +2,15 @@ import Fuse from 'fuse.js';
 import classNames from 'classnames';
 import Store from './store/index.js';
 import {
+  addAllChoices,
+  addAllGroups,
+  addAllItems,
   addItem,
   removeItem,
   highlightItem,
   addChoice,
   filterChoices,
   activateChoices,
-  addGroup,
   clearAll,
   clearChoices,
 }
@@ -1004,31 +1006,41 @@ class Choices {
         if (replaceChoices) {
           this._clearChoices();
         }
+
+        const allGroups = [];
+        const allChoices = [];
+
         // Add choices if passed
         if (choices && choices.length) {
           this.containerOuter.classList.remove(this.config.classNames.loadingState);
+
           choices.forEach((result) => {
+            const groupId = result.id ? result.id : Math.floor(new Date().valueOf() * Math.random());
+            const isDisabled = !!result.disabled;
+       
             if (result.choices) {
-              this._addGroup(
-                result,
-                (result.id || null),
-                value,
-                label
-              );
+              allGroups.push({
+                value: result.label, 
+                id: groupId,
+                active: true,
+                disabled: isDisabled
+              });
+              result.choices.forEach((choice) => {
+                choice['groupId'] = groupId;
+                allChoices.push(choice);
+              });
             } else {
-              this._addChoice(
-                result[value],
-                result[label],
-                result.selected,
-                result.disabled,
-                undefined,
-                result.customProperties,
-                result.placeholder
-              );
+              allChoices.push(result)
             }
           });
-        }
-      }
+          allGroups.length && this.store.dispatch(
+            addAllGroups(
+              allGroups
+            )
+          )
+          allChoices.length && this._addAllChoices(allChoices, value, label);
+        };
+      };
     }
     return this;
   }
@@ -2334,6 +2346,17 @@ class Choices {
   }
 
   /**
+   * Clear all choices added to the store.
+   * @return
+   * @private
+   */
+  _clearChoices() {
+    this.store.dispatch(
+      clearChoices()
+    );
+  }
+
+    /**
    * Add choice to dropdown
    * @param {String} value Value of choice
    * @param {String} [label] Label of choice
@@ -2382,18 +2405,7 @@ class Choices {
     }
   }
 
-  /**
-   * Clear all choices added to the store.
-   * @return
-   * @private
-   */
-  _clearChoices() {
-    this.store.dispatch(
-      clearChoices()
-    );
-  }
-
-  /**
+    /**
    * Add group to dropdown
    * @param {Object} group Group to add
    * @param {Number} id Group ID
@@ -2402,6 +2414,7 @@ class Choices {
    * @return
    * @private
    */
+
   _addGroup(group, id, valueKey = 'value', labelKey = 'label') {
     const groupChoices = isType('Object', group) ? group.choices : Array.from(group.getElementsByTagName('OPTION'));
     const groupId = id ? id : Math.floor(new Date().valueOf() * Math.random());
@@ -2439,6 +2452,96 @@ class Choices {
         )
       );
     }
+  }
+
+    /*
+    Add all choices to dropdown
+  */
+
+  _addAllChoices(choices, valueKey = 'value', labelKey = 'label') {
+    const allItems = [];
+    let itemsIdCount = 1;
+    
+    const updatedChoices = choices.reduce((acc, curr, idx) => {
+      const choiceId = idx + 1;
+      const choiceLabel = curr[labelKey]|| curr[valueKey];
+      const choiceElementId = `${this.baseId}-${this.idNames.itemChoice}-${choiceId}`;
+      
+      const choice = {
+        active: true,
+        customProperties: curr.customProperties,
+        disabled: curr.disabled || false,
+        elementId: choiceElementId,
+        groupId: curr.groupId || -1,
+        id: choiceId,
+        keyCode: null,
+        label: (isType('Object', curr)) ? choiceLabel : curr.innerHTML || null,
+        placeholder: curr.placeholder || false,
+        score: 9999,
+        selected: false,
+        value: curr[valueKey],
+      }
+
+      if(curr.selected) {
+        allItems.push({
+          choiceId,
+          customProperties: curr.customProperties || null,
+          groupId: -1,
+          id: itemsIdCount,
+          keyCode: null,
+          label: choiceLabel,
+          placeHolder: curr.placeholder || false,
+          value: curr.value,
+        })
+        itemsIdCount++ 
+      }
+
+      return [...acc, choice];
+    }, []);
+    
+    this.store.dispatch(
+      addAllChoices(
+        updatedChoices,
+      )
+    )
+    allItems.length && this._addAllItems({ allItems, labelKey, valueKey });
+  }
+
+  _addAllItems({ allItems, labelKey, valueKey }) {
+    this.store.dispatch(
+      addAllItems(
+        allItems
+      )
+    );
+
+    allItems.forEach((item) => {
+      const group = item.groupId >= 0 ? this.store.getGroupById(groupId) : null;
+      const passedValue = isType('String', item[valueKey]) ? item[valueKey].trim() : item[valueKey];
+      const passedLabel = item[labelKey] || passedValue;
+      
+      if (this.isSelectOneElement) {
+        this.removeActiveItems(item.id);
+      }
+      // Trigger change event
+      if (group && group.value) {
+        triggerEvent(this.passedElement, 'addItem', {
+          id: item.id,
+          value: passedValue,
+          label: passedLabel,
+          groupValue: group.value,
+          keyCode: item.keyCode || null,
+        });
+      } else {
+        triggerEvent(this.passedElement, 'addItem', {
+          id: item.id,
+          value: passedValue,
+          label: passedLabel,
+          keyCode: item.keyCode || null,
+        });
+      }
+    });
+
+    return this;
   }
 
   /**

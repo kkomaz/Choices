@@ -22,6 +22,13 @@ const choices = (state = [], action) => {
       }];
     }
 
+    case 'ADD_ALL_CHOICES': {
+      return [
+        ...state,
+        ...action.allChoices,
+      ]
+    }
+
     case 'ADD_ITEM': {
       let newState = state;
 
