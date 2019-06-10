@@ -1016,7 +1016,7 @@ class Choices {
 
           choices.forEach((result) => {
             const groupId = result.id ? result.id : Math.floor(new Date().valueOf() * Math.random());
-            const isDisabled = result.disabled ? result.disabled : false;
+            const isDisabled = !!result.disabled;
        
             if (result.choices) {
               allGroups.push({

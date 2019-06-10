@@ -1136,7 +1136,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	            choices.forEach(function (result) {
 	              var groupId = result.id ? result.id : Math.floor(new Date().valueOf() * Math.random());
-	              var isDisabled = result.disabled ? result.disabled : false;
+	              var isDisabled = !!result.disabled;
 
 	              if (result.choices) {
 	                allGroups.push({
