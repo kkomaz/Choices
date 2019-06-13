@@ -2635,8 +2635,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var itemsIdCount = 1;
 
 	      var updatedChoices = choices.reduce(function (acc, curr, idx) {
-	        var choiceId = idx + 1;
 	        var choiceLabel = curr[labelKey] || curr[valueKey];
+
+	        if (!choiceLabel) {
+	          return [].concat(_toConsumableArray(acc));
+	        }
+
+	        var choiceId = idx + 1;
 	        var choiceElementId = _this22.baseId + '-' + _this22.idNames.itemChoice + '-' + choiceId;
 
 	        var choice = {
