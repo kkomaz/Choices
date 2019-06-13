@@ -2464,9 +2464,9 @@ class Choices {
     
     const updatedChoices = choices.reduce((acc, curr, idx) => {
       const choiceLabel = curr[labelKey] || curr[valueKey];
-      
+
       if (!choiceLabel) {
-        return [...acc];
+        return acc;
       }
 
       const choiceId = idx + 1;
