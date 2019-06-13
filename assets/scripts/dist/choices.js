@@ -2638,7 +2638,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var choiceLabel = curr[labelKey] || curr[valueKey];
 
 	        if (!choiceLabel) {
-	          return [].concat(_toConsumableArray(acc));
+	          return acc;
 	        }
 
 	        var choiceId = idx + 1;
