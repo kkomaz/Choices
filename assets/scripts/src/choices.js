@@ -2463,8 +2463,13 @@ class Choices {
     let itemsIdCount = 1;
     
     const updatedChoices = choices.reduce((acc, curr, idx) => {
+      const choiceLabel = curr[labelKey] || curr[valueKey];
+      
+      if (!choiceLabel) {
+        return [...acc];
+      }
+
       const choiceId = idx + 1;
-      const choiceLabel = curr[labelKey]|| curr[valueKey];
       const choiceElementId = `${this.baseId}-${this.idNames.itemChoice}-${choiceId}`;
       
       const choice = {
