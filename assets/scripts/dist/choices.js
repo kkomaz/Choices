@@ -655,6 +655,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	                dropdownItem = this._getTemplate('notice', notice, 'no-choices');
 	              }
 
+	              if (!dropdownItem) {
+	                return;
+	              }
+
 	              this.choiceList.appendChild(dropdownItem);
 	            }
 	          }
@@ -2735,6 +2739,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return null;
 	      }
 	      var templates = this.config.templates;
+	      if (!templates) {
+	        return null;
+	      }
 
 	      for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
 	        args[_key - 1] = arguments[_key];

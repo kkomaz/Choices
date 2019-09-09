@@ -565,6 +565,10 @@ class Choices {
               dropdownItem = this._getTemplate('notice', notice, 'no-choices');
             }
 
+            if (!dropdownItem) {
+              return;
+            }
+
             this.choiceList.appendChild(dropdownItem);
           }
         }
@@ -1017,10 +1021,10 @@ class Choices {
           choices.forEach((result) => {
             const groupId = result.id ? result.id : Math.floor(new Date().valueOf() * Math.random());
             const isDisabled = !!result.disabled;
-       
+
             if (result.choices) {
               allGroups.push({
-                value: result.label, 
+                value: result.label,
                 id: groupId,
                 active: true,
                 disabled: isDisabled
@@ -2461,7 +2465,7 @@ class Choices {
   _addAllChoices(choices, valueKey = 'value', labelKey = 'label') {
     const allItems = [];
     let itemsIdCount = 1;
-    
+
     const updatedChoices = choices.reduce((acc, curr, idx) => {
       const choiceLabel = curr[labelKey] || curr[valueKey];
 
@@ -2471,7 +2475,7 @@ class Choices {
 
       const choiceId = idx + 1;
       const choiceElementId = `${this.baseId}-${this.idNames.itemChoice}-${choiceId}`;
-      
+
       const choice = {
         active: true,
         customProperties: curr.customProperties,
@@ -2498,12 +2502,12 @@ class Choices {
           placeHolder: curr.placeholder || false,
           value: curr.value,
         })
-        itemsIdCount++ 
+        itemsIdCount++
       }
 
       return [...acc, choice];
     }, []);
-    
+
     this.store.dispatch(
       addAllChoices(
         updatedChoices,
@@ -2523,7 +2527,7 @@ class Choices {
       const group = item.groupId >= 0 ? this.store.getGroupById(groupId) : null;
       const passedValue = isType('String', item[valueKey]) ? item[valueKey].trim() : item[valueKey];
       const passedLabel = item[labelKey] || passedValue;
-      
+
       if (this.isSelectOneElement) {
         this.removeActiveItems(item.id);
       }
@@ -2561,6 +2565,9 @@ class Choices {
       return null;
     }
     const templates = this.config.templates;
+    if (!templates) {
+      return null;
+    }
     return templates[template](...args);
   }
 
