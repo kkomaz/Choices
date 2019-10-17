@@ -3906,7 +3906,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function Store() {
 	    _classCallCheck(this, Store);
 
-	    this.store = (0, _redux.createStore)(_index2.default, window.devToolsExtension ? window.devToolsExtension() : undefined);
+	    this.store = (0, _redux.createStore)(_index2.default, window.__REDUX_DEVTOOLS_EXTENSION__ ? window.__REDUX_DEVTOOLS_EXTENSION__() : undefined);
 	  }
 
 	  /**

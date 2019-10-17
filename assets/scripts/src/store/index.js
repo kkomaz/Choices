@@ -5,7 +5,7 @@ export default class Store {
   constructor() {
     this.store = createStore(
       rootReducer
-      , window.devToolsExtension ? window.devToolsExtension() : undefined
+      , window.__REDUX_DEVTOOLS_EXTENSION__ ? window.__REDUX_DEVTOOLS_EXTENSION__() : undefined
     );
   }
 
