@@ -1836,10 +1836,10 @@ class Choices {
           );
         }
         if (!value && this.canSearch) {
-          this._handleSearch(value);
+          this._handleSearch(stripHTML(value));
         }
       } else if (this.canSearch && canAddItem.response) {
-        this._handleSearch(value);
+        this._handleSearch(stripHTML(value));
       }
     }
     // Re-establish canSearch value from changes in _onKeyDown
@@ -2651,7 +2651,7 @@ class Choices {
               class="${localClasses}"
               data-item
               data-id="${data.id}"
-              data-value="${stripHTML(data.value)}"
+              data-value="${data.value}"
               data-deletable
               ${data.active ?
                 'aria-selected="true"' :
@@ -2680,7 +2680,7 @@ class Choices {
             class="${localClasses}"
             data-item
             data-id="${data.id}"
-            data-value="${stripHTML(data.value)}"
+            data-value="${data.value}"
             ${data.active ?
               'aria-selected="true"' :
               ''
@@ -2721,14 +2721,14 @@ class Choices {
             class="${localClasses}"
             data-group
             data-id="${data.id}"
-            data-value="${stripHTML(data.value)}"
+            data-value="${data.value}"
             role="group"
             ${data.disabled ?
               'aria-disabled="true"' :
               ''
             }
             >
-            <div class="${globalClasses.groupHeading}">${stripHTML(data.value)}</div>
+            <div class="${globalClasses.groupHeading}">${data.value}</div>
           </div>
         `);
       },
@@ -2749,7 +2749,7 @@ class Choices {
             data-select-text="${this.config.itemSelectText}"
             data-choice
             data-id="${data.id}"
-            data-value="${stripHTML(data.value)}"
+            data-value="${data.value}"
             ${data.disabled ?
               'data-choice-disabled aria-disabled="true"' :
               'data-choice-selectable'
