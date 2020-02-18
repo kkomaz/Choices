@@ -436,11 +436,14 @@ export const isScrolledIntoView = (el, parent, direction = 1) => {
  * @param  {String}  Initial string/html
  * @return {String}  Sanitised string
  */
-export const stripHTML = function(html) {
-  let el = document.createElement("DIV");
-  el.innerHTML = html;
-  return el.textContent || el.innerText || "";
-};
+
+export const stripHTML = html => {
+  return (
+    html.replace(/>/g, '')
+      .replace(/</g, '')
+      .replace(/"/g, '&quot;')
+  )
+}
 
 /**
  * Adds animation to an element and removes it upon animation completion

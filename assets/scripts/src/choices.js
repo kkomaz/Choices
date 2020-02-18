@@ -23,6 +23,7 @@ import {
   isType,
   isElement,
   strToEl,
+  stripHTML,
   extend,
   getWidthOfInput,
   sortByAlpha,
@@ -470,9 +471,12 @@ class Choices {
 
     // Add each list item to list
     items.forEach((item) => {
+      console.log('item', item);
       // Create new list element
       const listItem = this._getTemplate('item', item);
       // Append it to list
+
+      console.log('listItem', listItem);
       itemListFragment.appendChild(listItem);
     });
 
@@ -585,6 +589,7 @@ class Choices {
         if (activeItems && activeItems) {
           // Create a fragment to store our list items
           // (so we don't have to update the DOM for each item)
+          console.log('activeItems', activeItems);
           const itemListFragment = this.renderItems(activeItems);
 
           // If we have items to add
@@ -2650,7 +2655,7 @@ class Choices {
               class="${localClasses}"
               data-item
               data-id="${data.id}"
-              data-value="${data.value}"
+              data-value="${stripHTML(data.value)}"
               data-deletable
               ${data.active ?
                 'aria-selected="true"' :
@@ -2679,7 +2684,7 @@ class Choices {
             class="${localClasses}"
             data-item
             data-id="${data.id}"
-            data-value="${data.value}"
+            data-value="${stripHTML(data.value)}"
             ${data.active ?
               'aria-selected="true"' :
               ''
@@ -2720,14 +2725,14 @@ class Choices {
             class="${localClasses}"
             data-group
             data-id="${data.id}"
-            data-value="${data.value}"
+            data-value="${stripHTML(data.value)}"
             role="group"
             ${data.disabled ?
               'aria-disabled="true"' :
               ''
             }
             >
-            <div class="${globalClasses.groupHeading}">${data.value}</div>
+            <div class="${globalClasses.groupHeading}">${stripHTML(data.value)}</div>
           </div>
         `);
       },
@@ -2748,7 +2753,7 @@ class Choices {
             data-select-text="${this.config.itemSelectText}"
             data-choice
             data-id="${data.id}"
-            data-value="${data.value}"
+            data-value="${stripHTML(data.value)}"
             ${data.disabled ?
               'data-choice-disabled aria-disabled="true"' :
               'data-choice-selectable'
@@ -2965,7 +2970,7 @@ class Choices {
         });
       }
     } else if (this.isTextElement) {
-      // Add any preset values seperated by delimiter
+      // Add any preset values seperated by delimite
       this.presetItems.forEach((item) => {
         const itemType = getType(item);
         if (itemType === 'Object') {

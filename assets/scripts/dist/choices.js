@@ -1,4 +1,4 @@
-/*! choices.js v3.0.2 | (c) 2019 Josh Johnson | https://github.com/jshjohnson/Choices#readme */ 
+/*! choices.js v3.0.2 | (c) 2020 Josh Johnson | https://github.com/jshjohnson/Choices#readme */ 
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory();
@@ -561,9 +561,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      // Add each list item to list
 	      items.forEach(function (item) {
+	        console.log('item', item);
 	        // Create new list element
 	        var listItem = _this3._getTemplate('item', item);
 	        // Append it to list
+
+	        console.log('listItem', listItem);
 	        itemListFragment.appendChild(listItem);
 	      });
 
@@ -675,6 +678,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          if (_activeItems && _activeItems) {
 	            // Create a fragment to store our list items
 	            // (so we don't have to update the DOM for each item)
+	            console.log('activeItems', _activeItems);
 	            var itemListFragment = this.renderItems(_activeItems);
 
 	            // If we have items to add
@@ -2789,7 +2793,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	            localClasses = (0, _classnames2.default)(globalClasses.item, (_classNames3 = {}, _defineProperty(_classNames3, globalClasses.highlightedState, data.highlighted), _defineProperty(_classNames3, globalClasses.itemSelectable, !data.disabled), _defineProperty(_classNames3, globalClasses.placeholder, data.placeholder), _classNames3));
 
-	            return (0, _utils.strToEl)('\n            <div\n              class="' + localClasses + '"\n              data-item\n              data-id="' + data.id + '"\n              data-value="' + data.value + '"\n              data-deletable\n              ' + (data.active ? 'aria-selected="true"' : '') + '\n              ' + (data.disabled ? 'aria-disabled="true"' : '') + '\n              >\n              ' + data.label + '<!--\n           --><button\n                type="button"\n                class="' + globalClasses.button + '"\n                data-button\n                aria-label="Remove item: \'' + data.value + '\'"\n                >\n                Remove item\n              </button>\n            </div>\n          ');
+	            return (0, _utils.strToEl)('\n            <div\n              class="' + localClasses + '"\n              data-item\n              data-id="' + data.id + '"\n              data-value="' + (0, _utils.stripHTML)(data.value) + '"\n              data-deletable\n              ' + (data.active ? 'aria-selected="true"' : '') + '\n              ' + (data.disabled ? 'aria-disabled="true"' : '') + '\n              >\n              ' + data.label + '<!--\n           --><button\n                type="button"\n                class="' + globalClasses.button + '"\n                data-button\n                aria-label="Remove item: \'' + data.value + '\'"\n                >\n                Remove item\n              </button>\n            </div>\n          ');
 	          }
 
 	          return (0, _utils.strToEl)('\n          <div\n            class="' + localClasses + '"\n            data-item\n            data-id="' + data.id + '"\n            data-value="' + data.value + '"\n            ' + (data.active ? 'aria-selected="true"' : '') + '\n            ' + (data.disabled ? 'aria-disabled="true"' : '') + '\n            >\n            ' + data.label + '\n          </div>\n        ');
@@ -2807,7 +2811,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	          var localClasses = (0, _classnames2.default)(globalClasses.item, globalClasses.itemChoice, (_classNames5 = {}, _defineProperty(_classNames5, globalClasses.itemDisabled, data.disabled), _defineProperty(_classNames5, globalClasses.itemSelectable, !data.disabled), _defineProperty(_classNames5, globalClasses.placeholder, data.placeholder), _classNames5));
 
-	          return (0, _utils.strToEl)('\n          <div\n            class="' + localClasses + '"\n            data-select-text="' + _this24.config.itemSelectText + '"\n            data-choice\n            data-id="' + data.id + '"\n            data-value="' + data.value + '"\n            ' + (data.disabled ? 'data-choice-disabled aria-disabled="true"' : 'data-choice-selectable') + '\n            id="' + data.elementId + '"\n            ' + (data.groupId > 0 ? 'role="treeitem"' : 'role="option"') + '\n            >\n            ' + data.label + '\n          </div>\n        ');
+	          return (0, _utils.strToEl)('\n          <div\n            class="' + localClasses + '"\n            data-select-text="' + _this24.config.itemSelectText + '"\n            data-choice\n            data-id="' + data.id + '"\n            data-value="' + (0, _utils.stripHTML)(data.value) + '"\n            ' + (data.disabled ? 'data-choice-disabled aria-disabled="true"' : 'data-choice-selectable') + '\n            id="' + data.elementId + '"\n            ' + (data.groupId > 0 ? 'role="treeitem"' : 'role="option"') + '\n            >\n            ' + data.label + '\n          </div>\n        ');
 	        },
 	        input: function input() {
 	          var localClasses = (0, _classnames2.default)(globalClasses.input, globalClasses.inputCloned);
@@ -2968,7 +2972,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          });
 	        }
 	      } else if (this.isTextElement) {
-	        // Add any preset values seperated by delimiter
+	        // Add any preset values seperated by delimite
 	        this.presetItems.forEach(function (item) {
 	          var itemType = (0, _utils.getType)(item);
 	          if (itemType === 'Object') {
@@ -6022,10 +6026,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param  {String}  Initial string/html
 	 * @return {String}  Sanitised string
 	 */
+
 	var stripHTML = exports.stripHTML = function stripHTML(html) {
-	  var el = document.createElement("DIV");
-	  el.innerHTML = html;
-	  return el.textContent || el.innerText || "";
+	  return html.replace(/>/g, '').replace(/</g, '').replace(/"/g, '&quot;');
 	};
 
 	/**
