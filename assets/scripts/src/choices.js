@@ -471,12 +471,9 @@ class Choices {
 
     // Add each list item to list
     items.forEach((item) => {
-      console.log('item', item);
       // Create new list element
       const listItem = this._getTemplate('item', item);
       // Append it to list
-
-      console.log('listItem', listItem);
       itemListFragment.appendChild(listItem);
     });
 
@@ -589,7 +586,6 @@ class Choices {
         if (activeItems && activeItems) {
           // Create a fragment to store our list items
           // (so we don't have to update the DOM for each item)
-          console.log('activeItems', activeItems);
           const itemListFragment = this.renderItems(activeItems);
 
           // If we have items to add
@@ -2970,7 +2966,7 @@ class Choices {
         });
       }
     } else if (this.isTextElement) {
-      // Add any preset values seperated by delimite
+      // Add any preset values seperated by delimiter
       this.presetItems.forEach((item) => {
         const itemType = getType(item);
         if (itemType === 'Object') {
