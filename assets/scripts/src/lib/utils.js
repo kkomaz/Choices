@@ -437,13 +437,11 @@ export const isScrolledIntoView = (el, parent, direction = 1) => {
  * @return {String}  Sanitised string
  */
 
-export const stripHTML = html => {
-  return (
-    html.replace(/>/g, '')
-      .replace(/</g, '')
-      .replace(/"/g, '&quot;')
-  )
-}
+export const stripHTML = html => ( 
+  html.replace(/>/g, '&gt;')
+    .replace(/</g, '&lt;')
+    .replace(/"/g, '&quot;')
+);
 
 /**
  * Adds animation to an element and removes it upon animation completion

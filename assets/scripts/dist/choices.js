@@ -6024,7 +6024,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 
 	var stripHTML = exports.stripHTML = function stripHTML(html) {
-	  return html.replace(/>/g, '').replace(/</g, '').replace(/"/g, '&quot;');
+	  return html.replace(/>/g, '&gt;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
 	};
 
 	/**
