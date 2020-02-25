@@ -441,6 +441,7 @@ export const stripHTML = html => (
   html.replace(/>/g, '&gt;')
     .replace(/</g, '&lt;')
     .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;')
 );
 
 /**
@@ -484,6 +485,9 @@ export const strToEl = (function() {
     let r;
     tmpEl.innerHTML = cleanedInput;
     r = tmpEl.children[0];
+
+    console.log('str', str);
+    console.log('tmpEl.innerHTML', tmpEl.innerHTML);
 
     while (tmpEl.firstChild) {
       tmpEl.removeChild(tmpEl.firstChild);

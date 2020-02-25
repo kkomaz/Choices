@@ -6024,7 +6024,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 
 	var stripHTML = exports.stripHTML = function stripHTML(html) {
-	  return html.replace(/>/g, '&gt;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+	  return html.replace(/>/g, '&gt;').replace(/</g, '&lt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
 	};
 
 	/**
@@ -6067,6 +6067,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var r = void 0;
 	    tmpEl.innerHTML = cleanedInput;
 	    r = tmpEl.children[0];
+
+	    console.log('str', str);
+	    console.log('tmpEl.innerHTML', tmpEl.innerHTML);
 
 	    while (tmpEl.firstChild) {
 	      tmpEl.removeChild(tmpEl.firstChild);
