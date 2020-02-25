@@ -6068,9 +6068,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    tmpEl.innerHTML = cleanedInput;
 	    r = tmpEl.children[0];
 
-	    console.log('str', str);
-	    console.log('tmpEl.innerHTML', tmpEl.innerHTML);
-
 	    while (tmpEl.firstChild) {
 	      tmpEl.removeChild(tmpEl.firstChild);
 	    }
