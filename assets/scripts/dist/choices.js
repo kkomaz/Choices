@@ -1,4 +1,4 @@
-/*! choices.js v3.0.2 | (c) 2019 Josh Johnson | https://github.com/jshjohnson/Choices#readme */ 
+/*! choices.js v3.0.2 | (c) 2020 Josh Johnson | https://github.com/jshjohnson/Choices#readme */ 
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory();
@@ -1973,10 +1973,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	            this.store.dispatch((0, _index3.activateChoices)(true));
 	          }
 	          if (!value && this.canSearch) {
-	            this._handleSearch(value);
+	            this._handleSearch((0, _utils.stripHTML)(value));
 	          }
 	        } else if (this.canSearch && canAddItem.response) {
-	          this._handleSearch(value);
+	          this._handleSearch((0, _utils.stripHTML)(value));
 	        }
 	      }
 	      // Re-establish canSearch value from changes in _onKeyDown
@@ -6022,10 +6022,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param  {String}  Initial string/html
 	 * @return {String}  Sanitised string
 	 */
+
 	var stripHTML = exports.stripHTML = function stripHTML(html) {
-	  var el = document.createElement("DIV");
-	  el.innerHTML = html;
-	  return el.textContent || el.innerText || "";
+	  return html.replace(/>/g, '&gt;').replace(/</g, '&lt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
 	};
 
 	/**

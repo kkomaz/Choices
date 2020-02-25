@@ -1217,4 +1217,38 @@ describe('Choices', () => {
       expect(selectedItems[0].customProperties).toBe(expectedCustomProperties);
     });
   });
+
+  describe('Unite Us tests', function() {
+    describe('_onKeyUp', () => {
+      beforeEach(function() {
+        this.input = document.createElement('select');
+  
+        for (let i = 1; i < 4; i++) {
+          const option = document.createElement('option');
+  
+          option.value = `Value ${i}`;
+          option.innerHTML = `Label ${i}`;
+  
+          this.input.appendChild(option);
+        }
+  
+        document.body.appendChild(this.input);
+      });
+  
+      it('calls _handleSearch with the stripped HTML', function() {
+        this.choices = new Choices(this.input);
+        this.choices.input.value = '<hello>';
+        
+        spyOn(this.choices, '_handleSearch');
+  
+        this.choices._onKeyUp({
+          target: this.choices.input,
+          keyCode: 13,
+          ctrlKey: false
+        });
+  
+        expect(this.choices._handleSearch).toHaveBeenCalledWith('hello');
+      });
+    });
+  })
 });

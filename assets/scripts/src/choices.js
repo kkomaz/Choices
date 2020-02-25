@@ -23,6 +23,7 @@ import {
   isType,
   isElement,
   strToEl,
+  stripHTML,
   extend,
   getWidthOfInput,
   sortByAlpha,
@@ -1835,10 +1836,10 @@ class Choices {
           );
         }
         if (!value && this.canSearch) {
-          this._handleSearch(value);
+          this._handleSearch(stripHTML(value));
         }
       } else if (this.canSearch && canAddItem.response) {
-        this._handleSearch(value);
+        this._handleSearch(stripHTML(value));
       }
     }
     // Re-establish canSearch value from changes in _onKeyDown
