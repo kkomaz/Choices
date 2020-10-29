@@ -2221,7 +2221,12 @@ class Choices {
         // Highlight choice based on last known highlight location
         if (choices.length > this.highlightPosition) {
           // If we have an option to highlight
-          passedEl = choices[this.highlightPosition];
+          const placeholderItem = this.dropdown.querySelector(`.${this.config.classNames.placeholder}`);
+          if (placeholderItem) {
+            passedEl = choices[1];
+          } else {
+            passedEl = choices[this.highlightPosition];
+          }
         } else {
           // Otherwise highlight the option before
           passedEl = choices[choices.length - 1];
